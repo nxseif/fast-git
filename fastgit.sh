@@ -1,14 +1,16 @@
 #!/bin/bash
 
-FILE="$1"
+FILE=$1
 
-if [ -z "$FILE" ]; then
-    echo "Usage: ./fastgit.sh <filename>"
+if [ -z "$FILE" ]
+then
+    echo "Usage: ./fastgit.sh filename"
     exit 1
 fi
 
-if [ ! -f "$FILE" ]; then
-    echo "Error: file '$FILE' does not exist."
+if [ ! -f "$FILE" ]
+then
+    echo "error: file does not exist."
     exit 1
 fi
 
