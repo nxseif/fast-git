@@ -43,16 +43,15 @@ It also checks if `git add`, `git commit` or `git push` fail and shows an error.
 ## Usage
 
 ```bash
-./fastgit.sh filename
-or
 fastgit filename
---help
+fastgit --help
+fastgit --version
 ```
 
 Example:
 
 ```bash
-./fastgit.sh README.md
+/fastgit.sh README.md
 ```
 
 Created by **nxseif** – personal project to make it less sufuring using git beginner friendly
