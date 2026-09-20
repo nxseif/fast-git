@@ -13,7 +13,9 @@ git push
 I just run:
 
 ```bash
-./fastgit.sh filename
+fastgit <filename>
+fastgit --help show help information
+fastgit --version show version information
 ```
 
 FastGit checks if you're inside a git repo, checks if the file exists, adds it, commits it and pushes it to GitHub.
@@ -42,6 +44,9 @@ It also checks if `git add`, `git commit` or `git push` fail and shows an error.
 
 ```bash
 ./fastgit.sh filename
+or
+fastgit filename
+--help
 ```
 
 Example:
