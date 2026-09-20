@@ -52,4 +52,3 @@ Example:
 
 Created by **nxseif** – personal project to make it less sufuring using git beginner friendly
 
-all credits to me
