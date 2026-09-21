@@ -36,10 +36,13 @@ It also checks if `git add`, `git commit`, or `git push` fail and shows an error
 * You can now add **2 files at the same time**
 * `--help` option
 * `--version` option
-
+* `--dry-run` option
+* `--push` option
 ## Updates
 
-* You can now add **2 files at the same time**
+- You can now add **2 files at the same time**
+- Added `--dry-run` option
+- Added `--push` option
 
 Example:
 
@@ -67,6 +70,9 @@ fastgit filename
 fastgit filename1 filename2
 fastgit --help
 fastgit --version
+fastgit --dry-run filename "commit message"
+fastgit --push filename "commit message"
+fastgit --dry-run --push filename "commit message"
 ```
 
 Example:
@@ -80,8 +86,6 @@ Example with 2 files:
 ```bash
 fastgit README.md main.c
 ```
-
-Created by **nxseif** – personal project to make using Git less suffering and more beginner-friendly.
 
 ## Basic Setup
 
@@ -117,3 +121,4 @@ Now you can use FastGit from anywhere:
 ```bash
 fastgit --help
 ```
+Created by **nxseif** — personal project to make using Git less suffering and more beginner friendly
