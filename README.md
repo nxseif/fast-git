@@ -51,7 +51,7 @@ fastgit --version
 Example:
 
 ```bash
-fastgit filename
+fastgit README.md
 ```
 
 Created by **nxseif** – personal project to make it less sufuring using git beginner friendly
