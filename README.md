@@ -1,84 +1,119 @@
-**# FastGit**
+# FastGit
 
-Small bash script for automation of common git commands.
+Small Bash script for automation of common Git commands.
 
 Instead of writing:
 
-**`bash**  **git add**   **git commit**   **git push**  **`**
+```bash
+git add
+git commit
+git push
+```
 
 I just run:
 
-**`bash**  **fastgit** \<filename>   **fastgit** \<filename1> \<filename2>  **fastgit --help**  **fastgit --version**  **`**
+```bash
+fastgit <filename>
+fastgit <filename1> <filename2>
+fastgit --help
+fastgit --version
+```
 
-FastGit checks if you're inside a git repo, checks if the file exists, adds it, commits it a>
+FastGit checks if you're inside a Git repo, checks if the file exists, adds it, commits it, and can push it.
 
-It also checks if **`git add`**, **`git commit`** or **`git push`** fail and shows an error.
+It also checks if `git add`, `git commit`, or `git push` fail and shows an error.
 
-**## What I added**
+## What I Added
 
-***** Check if you're inside a Git repository
-***** Check if a filename was given
-***** Check if the file exists
-***** Automatic **`git add`**
-***** Automatic **`git commit`**
-***** Automatic **`git push`**
-***** Basic error handling
-***** Works with filenames using variables and quotes
-***** You can now add ****2 files at the same time****
-*** `--help`** option
-*** `--version`** option
+* Check if you're inside a Git repository
+* Check if a filename was given
+* Check if the file exists
+* Automatic `git add`
+* Automatic `git commit`
+* Automatic `git push`
+* Basic error handling
+* Works with filenames using variables and quotes
+* You can now add **2 files at the same time**
+* `--help` option
+* `--version` option
 
-**## Updates**
+## Updates
 
-***** You can now add ****2 files at the same time****.
+* You can now add **2 files at the same time**
 
 Example:
 
-**`bash**  **fastgit README.md main.c**  **`**
+```bash
+fastgit README.md main.c
+```
 
 Another example:
 
-**`bash**  **fastgit "file one.txt" "file two.txt"**  **`**
+```bash
+fastgit "file one.txt" "file two.txt"
+```
 
-**## Technologies**
+## Technologies
 
-***** Bash
-***** Linux
-***** Git
-***** GitHub
+* Bash
+* Linux
+* Git
+* GitHub
 
-**## Usage**
+## Usage
 
-**`bash**  **fastgit filename**  **fastgit filename1 filename2**  **fastgit --help**   **fastgit --version**  **`**
+```bash
+fastgit filename
+fastgit filename1 filename2
+fastgit --help
+fastgit --version
+```
 
 Example:
 
-**`bash**  **fastgit README.md**  **`**
+```bash
+fastgit README.md
+```
 
 Example with 2 files:
 
-**`bash**  **fastgit README.md main.c**  **`**
+```bash
+fastgit README.md main.c
+```
 
-Created by ****nxseif**** – personal project to make it less suffering using git beginner friend>
+Created by **nxseif** – personal project to make using Git less suffering and more beginner-friendly.
 
-**## Basic setup**
+## Basic Setup
 
 Clone the repository:
 
-**`bash** **git clone https://github.com/nxseif/fast-git.git** **cd fast-git** **`**
+```bash
+git clone https://github.com/nxseif/fast-git.git
+cd fast-git
+```
 
 Make FastGit executable:
 
-**`bash** **chmod +x fastgit** **`**
+```bash
+chmod +x fastgit
+```
 
 Move FastGit to your local bin folder:
 
-**`bash** **mkdir -p ~/.local/bin** **mv fastgit ~/.local/bin/fastgit** **`**
+```bash
+mkdir -p ~/.local/bin
+mv fastgit ~/.local/bin/fastgit
+```
 
 Add it to your PATH:
 
-**`bash** **echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc** **source ~/.bashrc** **`**
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
 
-Now you can use:
+Now you can use FastGit from anywhere:
 
-**`bash** **fastgit --help** **`**
+```bash
+fastgit --help
+```
