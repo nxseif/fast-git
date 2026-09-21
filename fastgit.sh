@@ -1,23 +1,18 @@
 #!/bin/bash
 
 fle="$1"
-
-if [ "$fle" = "--version" ]
-then
-echo "FastGit version 1.1.0"
-exit 0 
-fi
+fle2="$2"
 
 if [ "$fle" = "--help" ]
 then
-    echo "fastgit - add, commit and push a file in one command"
+    echo "fastgit - add, commit and push one or two files in one command"
     echo ""
-    echo "usage: fastgit filename"
+    echo "usage: fastgit filename1 [filename2]"
     echo ""
     echo "what it does:"
     echo "  1. checks you are inside a git repo"
-    echo "  2. checks the file exists"
-    echo "  3. runs git add, git commit and git push on it"
+    echo "  2. checks the file(s) exist"
+    echo "  3. runs git add, git commit and git push on them"
     exit 0
 fi
 
@@ -29,26 +24,47 @@ fi
 
 if [ -z "$fle" ]
 then
-    echo "usage: fastgit filename"
+    echo "usage: fastgit filename1 [filename2]"
     exit 1
 fi
 
 if [ ! -f "$fle" ]
 then
-    echo "warning: file does not exist"
+    echo "warning: $fle does not exist"
     exit 1
 fi
 
-if ! git add "$fle"
+if [ -n "$fle2" ] && [ ! -f "$fle2" ]
 then
-    echo "warning: git add fail"
+    echo "warning: $fle2 does not exist"
     exit 1
 fi
 
-if ! git commit -m "Update $fle"
+if [ -z "$fle2" ]
 then
-    echo "warning:commit fail"
-    exit 1
+    if ! git add "$fle"
+    then
+        echo "warning: git add fail"
+        exit 1
+    fi
+
+    if ! git commit -m "Update $fle"
+    then
+        echo "warning:commit fail"
+        exit 1
+    fi
+else
+    if ! git add "$fle" "$fle2"
+    then
+        echo "warning: git add fail"
+        exit 1
+    fi
+
+    if ! git commit -m "Update $fle and $fle2"
+    then
+        echo "warning:commit fail"
+        exit 1
+    fi
 fi
 
 if ! git push
