@@ -1,19 +1,42 @@
 #!/bin/bash
 
 fle="$1"
-fle2="$2"
+dry_run="no"
+do_push="no"
 
 if [ "$fle" = "--help" ]
 then
     echo "fastgit - add, commit and push one or two files in one command"
     echo ""
-    echo "usage: fastgit filename1 [filename2]"
+    echo "usage: fastgit [--dry-run] [--push] filename1 [filename2] \"commit message\""
     echo ""
-    echo "what it does:"
-    echo "  1. checks you are inside a git repo"
-    echo "  2. checks the file(s) exist"
-    echo "  3. runs git add, git commit and git push on them"
+    echo "flags:"
+    echo "  --dry-run   show what would happen, don't change anything"
+    echo "  --push      also push after committing (default is no push)"
+    echo ""
+    echo "if you leave out the commit message, fastgit will ask for it"
     exit 0
+fi
+
+if [ "$fle" = "--dry-run" ]
+then
+    dry_run="yes"
+    shift
+    fle="$1"
+fi
+
+if [ "$fle" = "--push" ]
+then
+    do_push="yes"
+    shift
+    fle="$1"
+fi
+
+if [ "$fle" = "--dry-run" ]
+then
+    dry_run="yes"
+    shift
+    fle="$1"
 fi
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1
@@ -24,7 +47,7 @@ fi
 
 if [ -z "$fle" ]
 then
-    echo "usage: fastgit filename1 [filename2]"
+    echo "usage: fastgit [--dry-run] [--push] filename1 [filename2] \"commit message\""
     exit 1
 fi
 
@@ -34,43 +57,80 @@ then
     exit 1
 fi
 
+if [ -f "$2" ]
+then
+    fle2="$2"
+    msg="$3"
+else
+    fle2=""
+    msg="$2"
+fi
+
 if [ -n "$fle2" ] && [ ! -f "$fle2" ]
 then
     echo "warning: $fle2 does not exist"
     exit 1
 fi
 
-if [ -z "$fle2" ]
+if [ -z "$msg" ]
 then
-    if ! git add "$fle"
-    then
-        echo "warning: git add fail"
-        exit 1
-    fi
+    read -p "commit message: " msg
+fi
 
-    if ! git commit -m "Update $fle"
+if [ -z "$msg" ]
+then
+    echo "warning: commit message is required"
+    exit 1
+fi
+
+if [ "$dry_run" = "yes" ]
+then
+    echo "dry run - nothing was actually done"
+    if [ -n "$fle2" ]
     then
-        echo "warning:commit fail"
-        exit 1
+        echo "would run: git add \"$fle\" \"$fle2\""
+    else
+        echo "would run: git add \"$fle\""
     fi
-else
+    echo "would run: git commit -m \"$msg\""
+    if [ "$do_push" = "yes" ]
+    then
+        echo "would run: git push"
+    fi
+    exit 0
+fi
+
+if [ -n "$fle2" ]
+then
     if ! git add "$fle" "$fle2"
     then
         echo "warning: git add fail"
         exit 1
     fi
-
-    if ! git commit -m "Update $fle and $fle2"
+else
+    if ! git add "$fle"
     then
-        echo "warning:commit fail"
+        echo "warning: git add fail"
         exit 1
     fi
 fi
 
-if ! git push
+if ! git commit -m "$msg"
 then
-    echo "warining push failed"
+    echo "warning:commit fail"
     exit 1
 fi
 
-echo "done"
+if [ "$do_push" = "yes" ]
+then
+    if ! git push
+    then
+        echo "warining push failed"
+        exit 1
+    fi
+    echo "done - added, committed and pushed"
+    exit 0
+fi
+
+echo "done - added and committed, not pushed (use --push to also push)"
+exit 0
