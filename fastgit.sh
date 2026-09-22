@@ -4,6 +4,13 @@ fle="$1"
 dry_run="no"
 do_push="no"
 
+if [ "$fle" = "--version" ]
+then 
+	echo "fastgit v1.0"
+	exit 0
+fi
+
+
 if [ "$fle" = "--help" ]
 then
     echo "fastgit - add, commit and push one or two files in one command"
