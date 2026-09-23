@@ -2,12 +2,12 @@
 
 fle="$1"
 dry_run="no"
-do_push="no"
+push="no"
 
 if [ "$fle" = "--version" ]
-then 
-	echo "fastgit v1.0"
-	exit 0
+then
+        echo "fastgit v1.0"
+        exit 0
 fi
 
 
@@ -34,21 +34,21 @@ fi
 
 if [ "$fle" = "--push" ]
 then
-    do_push="yes"
-    shift
-    fle="$1"
+    push="yes"
+  shift
+   fle="$1"
 fi
 
 if [ "$fle" = "--dry-run" ]
 then
-    dry_run="yes"
-    shift
-    fle="$1"
+   dry_run="yes"
+     shift
+  fle="$1"
 fi
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1
 then
-    echo "warning youre not inside git repo!!"
+    echo "warning youre not inside git repo"
     exit 1
 fi
 
@@ -100,7 +100,7 @@ then
         echo "would run: git add \"$fle\""
     fi
     echo "would run: git commit -m \"$msg\""
-    if [ "$do_push" = "yes" ]
+    if [ "$push" = "yes" ]
     then
         echo "would run: git push"
     fi
@@ -128,16 +128,16 @@ then
     exit 1
 fi
 
-if [ "$do_push" = "yes" ]
+if [ "$push" = "yes" ]
 then
     if ! git push
     then
         echo "warining push failed"
         exit 1
     fi
-    echo "done - added, committed and pushed"
+    echo "done :  added committed and pushed"
     exit 0
 fi
 
-echo "done - added and committed, not pushed (use --push to also push)"
+echo "done : added and committed  not pushed (use --push to also push)"
 exit 0
