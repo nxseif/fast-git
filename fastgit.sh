@@ -4,9 +4,40 @@ fle="$1"
 dry_run="no"
 push="no"
 
+
+if [ "$fle" = "--diff" ]
+then 
+	git diff
+	exit 0
+fi
+
+
+if [ "$fle" = "--branch" ]
+then 
+	git branch --show-current
+	exit 0
+fi
+
+
+if [ "$fle" = "--log" ]
+then 
+	git log --oneline -5
+
+exit 0 
+fi 
+
+
+if [ "$fle" = "--status" ]
+then 
+	git status 
+exit 0
+
+fi
+
+
 if [ "$fle" = "--version" ]
 then
-        echo "fastgit v1.0"
+        echo "fastgit v1.6"
         exit 0
 fi
 
@@ -25,26 +56,27 @@ then
     exit 0
 fi
 
-if [ "$fle" = "--dry-run" ]
-then
-    dry_run="yes"
-    shift
-    fle="$1"
-fi
+while [ $# -gt 0 ]
+do 
+	if [ "$1" = "--dry-run" ]
+then 
+dry_run="yes"
+shift
 
-if [ "$fle" = "--push" ]
+elif [ "$1" = "--push" ]  
 then
-    push="yes"
-  shift
-   fle="$1"
-fi
+	push="yes"
+shift
 
-if [ "$fle" = "--dry-run" ]
-then
-   dry_run="yes"
-     shift
-  fle="$1"
-fi
+
+else 
+	break
+
+fi 
+done
+
+fle="$1"
+
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1
 then
