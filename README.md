@@ -38,11 +38,22 @@ It also checks if `git add`, `git commit`, or `git push` fail and shows an error
 * `--version` option
 * `--dry-run` option
 * `--push` option
+* `--status` option
+* `--log` option
+* `--branch` option
+* `--diff` option
+* `--push` and `--dry-run` can now be used together in any order
+
 ## Updates
 
-- You can now add **2 files at the same time**
-- Added `--dry-run` option
-- Added `--push` option
+* You can now add **2 files at the same time**
+* Added `--dry-run` option
+* Added `--push` option
+* Added `--status` option
+* Added `--log` option
+* Added `--branch` option
+* Added `--diff` option
+* Improved option handling so `--push` and `--dry-run` can be used together in any order
 
 Example:
 
@@ -54,6 +65,12 @@ Another example:
 
 ```bash
 fastgit "file one.txt" "file two.txt"
+```
+
+You can also use the shorter `gf` command:
+
+```bash
+gf README.md
 ```
 
 ## Technologies
@@ -70,9 +87,14 @@ fastgit filename
 fastgit filename1 filename2
 fastgit --help
 fastgit --version
+fastgit --status
+fastgit --log
+fastgit --branch
+fastgit --diff
 fastgit --dry-run filename "commit message"
 fastgit --push filename "commit message"
 fastgit --dry-run --push filename "commit message"
+fastgit --push --dry-run filename "commit message"
 ```
 
 Example:
@@ -87,6 +109,30 @@ Example with 2 files:
 fastgit README.md main.c
 ```
 
+Check Git status:
+
+```bash
+fastgit --status
+```
+
+Show the last 5 commits:
+
+```bash
+fastgit --log
+```
+
+Show the current branch:
+
+```bash
+fastgit --branch
+```
+
+Show unstaged changes:
+
+```bash
+fastgit --diff
+```
+
 ## Basic Setup
 
 Clone the repository:
@@ -99,14 +145,14 @@ cd fast-git
 Make FastGit executable:
 
 ```bash
-chmod +x fastgit
+chmod +x fastgit.sh
 ```
 
 Move FastGit to your local bin folder:
 
 ```bash
 mkdir -p ~/.local/bin
-mv fastgit ~/.local/bin/fastgit
+mv fastgit.sh ~/.local/bin/fastgit
 ```
 
 Add it to your PATH:
@@ -121,4 +167,28 @@ Now you can use FastGit from anywhere:
 ```bash
 fastgit --help
 ```
+
+### Optional: Use the shorter `gf` command
+
+Create a shortcut to FastGit:
+
+```bash
+ln -s ~/.local/bin/fastgit ~/.local/bin/gf
+```
+
+Now you can use:
+
+```bash
+gf --help
+gf --version
+gf --status
+gf README.md
+```
+
+Check that the command is available:
+
+```bash
+which gf
+```
+
 Created by **nxseif** — personal project to make using Git less suffering and more beginner friendly
