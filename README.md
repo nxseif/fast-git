@@ -44,15 +44,30 @@ It also checks if `git add`, `git commit`, or `git push` fail and shows an error
 * Switch between repositories with `gf repo <name>`
 * Handle the first push of a branch without an upstream
 
-## Usage
+## Updates
 
-### Add and commit a file
+* You can now add **2 files at the same time**
+* Added `--dry-run` option
+* Added `--push` option
+* Added `status` command
+* Added `log` command
+* Added `branch` command
+* Added `diff` command
+* Improved option handling so `--push` and `--dry-run` can be used together in any order
+* Added repository discovery with `gf repos`
+* Added repository navigation with `gf repo <name>`
+* Added `gf-function.sh` for repository navigation
+* Added first-push handling for branches without an upstream
+
+## Examples
+
+Add and commit one file:
 
 ```bash
 gf README.md "update readme"
 ```
 
-### Add and commit two files
+Add and commit two files:
 
 ```bash
 gf README.md main.c "update files"
@@ -140,6 +155,12 @@ netchecker
 You can then switch directly to a repository:
 
 ```bash
+gf repo <name>
+```
+
+Example:
+
+```bash
 gf repo nxvpn
 ```
 
@@ -156,6 +177,8 @@ you can just use:
 ```bash
 gf repo nxvpn
 ```
+
+The `gf repo` feature is implemented as a Bash function in `gf-function.sh`.
 
 ## Git Commands
 
@@ -240,11 +263,22 @@ Make FastGit executable:
 chmod +x fastgit.sh
 ```
 
-Move it to your local bin folder:
+Create your local bin folder:
 
 ```bash
 mkdir -p ~/.local/bin
-mv fastgit.sh ~/.local/bin/fastgit
+```
+
+Copy FastGit to your local bin folder:
+
+```bash
+cp fastgit.sh ~/.local/bin/fastgit
+```
+
+Copy the `gf` repository navigation function:
+
+```bash
+cp gf-function.sh ~/.local/bin/gf-function.sh
 ```
 
 Add your local bin folder to `PATH`:
@@ -254,21 +288,15 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-You can now use FastGit from anywhere:
-
-```bash
-fastgit help
-```
-
 ### Short `gf` command
 
-You can also use `gf` as a shorter command.
+Create the `gf` shortcut:
 
 ```bash
 ln -s ~/.local/bin/fastgit ~/.local/bin/gf
 ```
 
-Then:
+You can now use:
 
 ```bash
 gf help
@@ -277,15 +305,44 @@ gf status
 gf README.md "update readme"
 ```
 
-Check that `gf` is available:
+### Enable `gf repo`
+
+The repository navigation feature needs to be loaded as a Bash function because `cd` must change the directory of the current terminal.
+
+Add the function to your `.bashrc`:
 
 ```bash
-which gf
+echo 'source ~/.local/bin/gf-function.sh' >> ~/.bashrc
+```
+
+Then reload your Bash configuration:
+
+```bash
+source ~/.bashrc
+```
+
+Now you can use:
+
+```bash
+gf repos
+```
+
+or:
+
+```bash
+gf repo nxvpn
+```
+
+Check that it works:
+
+```bash
+gf repo <repository-name>
 ```
 
 ## About
 
-FastGit is a personal Bash project I made to make using Git a little less annoying
+FastGit is a personal Bash project I made to make using Git a little less annoying.
 
+I'm building it step by step while learning Bash, Git, and Linux.
 
 Created by **nxseif** — making Git less suffering, one command at a time.
