@@ -180,8 +180,16 @@ fi
 if git diff --cached --quiet
 then
 	echo "nothing to commit"
-	exit 0
+
+if [ "$push" = "yes" ]
+then
+	git push
 fi
+  exit 0
+
+fi
+
+
 
 if ! git commit -m "$msg"
 then
