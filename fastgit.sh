@@ -179,16 +179,14 @@ fi
 
 if git diff --cached --quiet
 then
-	echo "nothing to commit"
+ echo "nothing to commit"
 
-if [ "$push" = "yes" ]
-then
-	git push
+    if [ "$push" = "yes" ]
+ 	then
+   	git push
+ fi
+	 exit 0
 fi
-  exit 0
-
-fi
-
 
 
 if ! git commit -m "$msg"
@@ -221,7 +219,7 @@ if ! git push
 else
 	if ! git push -u origin "$branch"
 then
-	echo "warning: first push failed"
+	echo "warning : first push failed"
 	exit 1
     fi
 fi
