@@ -5,44 +5,62 @@ dry_run="no"
 push="no"
 
 
-if [ "$fle" = "--diff" ]
-then 
+if [ "$fle" = "repos" ]
+then
+	echo "your repositories: "
+echo ""
+
+find ~ -maxdepth 3 -type d -name ".git" 2>/dev/null | while read -r repo
+do
+	folder=$(dirname "$repo")
+name=$(basename "$folder")
+
+echo "$name"
+echo "$folder"
+echo""
+done
+
+exit 0
+fi
+
+if [ "$fle" = "diff" ]
+then
 	git diff
 	exit 0
 fi
 
 
-if [ "$fle" = "--branch" ]
-then 
+if [ "$fle" = "branch" ]
+then
 	git branch --show-current
 	exit 0
 fi
 
 
-if [ "$fle" = "--log" ]
-then 
+if [ "$fle" = "log" ]
+then
 	git log --oneline -5
 
-exit 0 
-fi 
+exit 0
+fi
 
 
-if [ "$fle" = "--status" ]
-then 
-	git status 
+if [ "$fle" = "status" ]
+then
+	git status
 exit 0
 
 fi
 
 
-if [ "$fle" = "--version" ]
+if [ "$fle" = "version" ]
 then
         echo "fastgit v1.6"
         exit 0
 fi
 
 
-if [ "$fle" = "--help" ]
+if [ "$fle" = "help" ]
 then
     echo "fastgit - add, commit and push one or two files in one command"
     echo ""
@@ -53,26 +71,28 @@ then
     echo "  --push      also push after committing (default is no push)"
     echo ""
     echo "if you leave out the commit message, fastgit will ask for it"
+    echo " [ gf repos ] list your Git repositories  "
+    echo " [ gf repo <name> ] switch to a repository "
     exit 0
 fi
 
 while [ $# -gt 0 ]
-do 
+do
 	if [ "$1" = "--dry-run" ]
-then 
+then
 dry_run="yes"
 shift
 
-elif [ "$1" = "--push" ]  
+elif [ "$1" = "--push" ]
 then
 	push="yes"
 shift
 
 
-else 
+else
 	break
 
-fi 
+fi
 done
 
 fle="$1"
@@ -132,7 +152,8 @@ then
         echo "would run: git add \"$fle\""
     fi
     echo "would run: git commit -m \"$msg\""
-    if [ "$push" = "yes" ]
+
+ if [ "$push" = "yes" ]
     then
         echo "would run: git push"
     fi
@@ -154,20 +175,50 @@ else
     fi
 fi
 
-if ! git commit -m "$msg"
+
+
+if git diff --cached --quiet
 then
-    echo "warning:commit fail"
-    exit 1
+	echo "nothing to commit"
+	exit 0
 fi
 
-if [ "$push" = "yes" ]
+if ! git commit -m "$msg"
 then
-    if ! git push
+	echo"warning : commit failed"
+	exit 1
+fi
+
+
+
+if  [ "$push" = "yes" ]
+then
+	if ! git remote get-url origin > /dev/null 2>&1
+then
+	echo "warning : no origin remote found "
+	exit 1
+fi
+
+branch=$(git branch --show-current)
+if git rev-parse --abbrev-ref --symbolic-full-name '@{u}' > /dev/null 2>&1
+then
+
+if ! git push
+
     then
         echo "warining push failed"
         exit 1
     fi
-    echo "done :  added committed and pushed"
+
+else
+	if ! git push -u origin "$branch"
+then
+	echo "warning: first push failed"
+	exit 1
+    fi
+fi
+
+  echo "done :  added committed and pushed"
     exit 0
 fi
 
