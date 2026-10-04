@@ -55,7 +55,7 @@ fi
 
 if [ "$fle" = "version" ]
 then
-        echo "fastgit v1.6"
+        echo "fastgit v1.7.6"
         exit 0
 fi
 
