@@ -7,12 +7,12 @@ push="no"
 
 if [ "$fle" = "repos" ]
 then
-	echo "your repositories: "
+        echo "your repositories: "
 echo ""
 
 find ~ -maxdepth 3 -type d -name ".git" 2>/dev/null | while read -r repo
 do
-	folder=$(dirname "$repo")
+        folder=$(dirname "$repo")
 name=$(basename "$folder")
 
 echo "$name"
@@ -25,21 +25,21 @@ fi
 
 if [ "$fle" = "diff" ]
 then
-	git diff
-	exit 0
+        git diff
+        exit 0
 fi
 
 
 if [ "$fle" = "branch" ]
 then
-	git branch --show-current
-	exit 0
+        git branch --show-current
+        exit 0
 fi
 
 
 if [ "$fle" = "log" ]
 then
-	git log --oneline -5
+        git log --oneline -5
 
 exit 0
 fi
@@ -47,7 +47,7 @@ fi
 
 if [ "$fle" = "status" ]
 then
-	git status
+        git status
 exit 0
 
 fi
@@ -78,24 +78,41 @@ fi
 
 while [ $# -gt 0 ]
 do
-	if [ "$1" = "--dry-run" ]
+        if [ "$1" = "--dry-run" ]
 then
 dry_run="yes"
 shift
 
 elif [ "$1" = "--push" ]
 then
-	push="yes"
+        push="yes"
 shift
 
 
 else
-	break
+        break
 
 fi
 done
 
 fle="$1"
+
+
+# Check if this folder is NOT already a git repository
+if [ ! -d ".git" ]; then
+    echo "First time setup: Initializing new Git repository..."
+    git init
+    git branch -M main
+
+    # Ask the user for the GitHub link
+    echo -n "Enter your new GitHub repo URL (or press Enter to skip): "
+    read repo_url
+
+    # If they typed a URL, connect it
+    if [ -n "$repo_url" ]; then
+        git remote add origin "$repo_url"
+    fi
+fi
 
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1
@@ -149,7 +166,7 @@ then
     then
         echo "would run: git add \"$fle\" \"$fle2\""
     else
-        echo "would run: git add \"$fle\""
+        echo"would run: git add \"$fle\""
     fi
     echo "would run: git commit -m \"$msg\""
 
@@ -182,27 +199,27 @@ then
  echo "nothing to commit"
 
     if [ "$push" = "yes" ]
- 	then
-   	git push
+        then
+        git push
  fi
-	 exit 0
+         exit 0
 fi
 
 
 if ! git commit -m "$msg"
 then
-	echo"warning : commit failed"
-	exit 1
+        echo"warning : commit failed"
+        exit 1
 fi
 
 
 
 if  [ "$push" = "yes" ]
 then
-	if ! git remote get-url origin > /dev/null 2>&1
+        if ! git remote get-url origin > /dev/null 2>&1
 then
-	echo "warning : no origin remote found "
-	exit 1
+        echo "warning : no origin remote found "
+        exit 1
 fi
 
 branch=$(git branch --show-current)
@@ -212,15 +229,15 @@ then
 if ! git push
 
     then
-        echo "warining push failed"
+        echo"warining push failed"
         exit 1
     fi
 
 else
-	if ! git push -u origin "$branch"
+        if ! git push -u origin "$branch"
 then
-	echo "warning : first push failed"
-	exit 1
+        echo "warning : first push failed"
+        exit 1
     fi
 fi
 
