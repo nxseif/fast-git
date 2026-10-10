@@ -12,7 +12,7 @@ echo ""
 
 find ~ -maxdepth 3 -type d -name ".git" 2>/dev/null | while read -r repo
 do
-        folder=$(dirname "$repo")
+folder=$(dirname "$repo")
 name=$(basename "$folder")
 
 echo "$name"
@@ -98,18 +98,14 @@ done
 fle="$1"
 
 
-# Check if this folder is NOT already a git repository
 if [ ! -d ".git" ]; then
-    echo "First time setup: Initializing new Git repository..."
+    echo " first time setup: initializing new Git repository"
     git init
     git branch -M main
 
-    # Ask the user for the GitHub link
     echo -n "Enter your new GitHub repo URL (or press Enter to skip): "
     read repo_url
-
-    # If they typed a URL, connect it
-    if [ -n "$repo_url" ]; then
+if [ -n "$repo_url" ]; then
         git remote add origin "$repo_url"
     fi
 fi
