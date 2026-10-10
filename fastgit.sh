@@ -8,7 +8,6 @@ push="no"
 if [ "$fle" = "repos" ]
 then
         echo "your repositories: "
-echo ""
 
 find ~ -maxdepth 3 -type d -name ".git" 2>/dev/null | while read -r repo
 do
@@ -103,7 +102,7 @@ if [ ! -d ".git" ]; then
     git init
     git branch -M main
 
-    echo -n "Enter your new GitHub repo URL (or press Enter to skip): "
+    echo -n "enter your new gitHub repo url (or press enter to skip): "
     read repo_url
 if [ -n "$repo_url" ]; then
         git remote add origin "$repo_url"
