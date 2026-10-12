@@ -1,50 +1,38 @@
-# FastGit 🚀
+# FastGit 
 
-Small Bash script for making common Git commands easier.
+A lightweight Bash utility that simplifies common Git workflows with a single command.
 
-Instead of writing:
+FastGit helps you stage and commit multiple files, optionally push changes to GitHub, and access useful Git shortcuts directly from your terminal.
 
-```bash
-git add README.md
-git commit -m "update readme"
-git push
-```
-
-You can use:
-
-```bash
-gf --push README.md "update readme"
-```
-
-FastGit handles adding, committing, and optionally pushing files from one command.
-
-It also includes useful Git shortcuts, repository discovery, dry-run mode, basic error handling, and automatic setup for a new local Git repository.
-
----
+Built with Bash while learning Linux, Git, and shell scripting.
 
 ## Features
 
-* Add and commit one file
-* Add and commit two files
-* Support filenames with spaces
-* Optional Git push with `--push`
-* Dry-run mode with `--dry-run`
-* Use `--push` and `--dry-run` together in any order
-* Automatic `git init` for new directories
-* Set the initial branch to `main`
-* Optional remote configuration during first-time setup
-* Detect whether you're inside a Git repository
-* Check whether files exist before adding them
-* Check whether Git operations fail
-* Detect when there is nothing to commit
-* Handle the first push of a branch without an upstream
-* Check for an `origin` remote before pushing
-* List Git repositories with `gf repos`
-* Repository navigation with `gf repo <name>`
-* Git shortcuts for status, diff, branch, and log
-* Help and version commands
+- Add and commit multiple files in one command
+- Support filenames containing spaces
+- Optional interactive commit-message prompt
+- Optional push with `--push`
+- Dry-run mode with `--dry-run`
+- Combine `--push` and `--dry-run`
+- Initialize new local Git repositories
+- Set the initial branch to `main`
+- Optionally configure a Git remote during setup
+- Validate files before staging them
+- Detect Git operation failures
+- Detect when there is nothing to commit
+- Handle the first push when a branch has no upstream
+- Check for an `origin` remote before pushing
+- List local Git repositories with `gf repos`
+- Switch repositories with `gf repo <name>` using a Bash function
+- Shortcuts for status, diff, branch, log, help, and version
 
----
+## Requirements
+
+- Linux or another Unix-like environment
+- Bash
+- Git
+- A configured Git identity for committing
+- A GitHub account and remote repository if you want to push to GitHub
 
 ## Installation
 
@@ -55,7 +43,7 @@ git clone https://github.com/nxseif/fast-git.git
 cd fast-git
 ```
 
-### 2. Make FastGit executable
+### 2. Make the script executable
 
 ```bash
 chmod +x fastgit.sh
@@ -67,13 +55,15 @@ chmod +x fastgit.sh
 mkdir -p ~/.local/bin
 ```
 
-### 4. Copy FastGit
+### 4. Install FastGit
 
 ```bash
 cp fastgit.sh ~/.local/bin/fastgit
 ```
 
-### 5. Add `~/.local/bin` to your PATH
+### 5. Add the directory to your PATH
+
+If `~/.local/bin` is not already in your PATH, add it to your `~/.bashrc`:
 
 ```bash
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
@@ -86,53 +76,70 @@ source ~/.bashrc
 ln -s ~/.local/bin/fastgit ~/.local/bin/gf
 ```
 
-You can now run:
+If the `gf` link already exists, you do not need to create it again.
+
+Check the installation:
 
 ```bash
+gf version
 gf help
 ```
 
----
+## Usage
 
-# Usage
-
-## Add and commit one file
+### Basic syntax
 
 ```bash
-gf README.md "update readme"
+gf [--dry-run] [--push] file1 [file2 ...] -m "commit message"
 ```
 
-FastGit will run the equivalent of:
+The options must appear before the filenames.
+
+- `file1` is the first file to stage.
+- `[file2 ...]` represents any additional files.
+- `-m` introduces the commit message.
+- `--dry-run` previews the operation without committing or pushing.
+- `--push` pushes the commit after a successful commit.
+
+### Add and commit one file
+
+```bash
+gf README.md -m "update readme"
+```
+
+Equivalent Git commands:
 
 ```bash
 git add README.md
 git commit -m "update readme"
 ```
 
-It does **not** push unless `--push` is used.
+FastGit does not push by default.
 
----
-
-## Add and commit two files
+### Add and commit multiple files
 
 ```bash
-gf README.md main.c "update files"
+gf README.md main.c script.sh -m "update project files"
 ```
 
-FastGit supports filenames containing spaces:
+You can supply additional filenames without changing the script.
+
+### Filenames containing spaces
+
+Quote filenames that contain spaces:
 
 ```bash
-gf "file one.txt" "file two.txt" "update files"
+gf "file one.txt" "file two.txt" "notes file.md" -m "add project files"
 ```
 
----
+Each quoted filename is passed to Git as a separate argument.
 
-## Commit message prompt
+### Interactive commit message
 
-If you don't provide a commit message:
+You can omit `-m` and enter the commit message when prompted, provided you supply only filenames:
 
 ```bash
-gf README.md
+gf README.md main.c
 ```
 
 FastGit asks:
@@ -141,90 +148,70 @@ FastGit asks:
 commit message:
 ```
 
-You can then enter your commit message normally.
+Enter your message and press Enter.
 
----
+If you provide `-m`, the message is taken from the remaining arguments.
 
-# Push
+## Push to a remote repository
 
-FastGit does not push by default.
-
-Use `--push` when you want to push the commit:
+FastGit does not push automatically. Use `--push` when you want to push after committing:
 
 ```bash
-gf --push README.md "update readme"
+gf --push README.md main.c -m "update project"
 ```
 
 FastGit checks whether an `origin` remote exists before pushing.
 
-If the current branch does not have an upstream, FastGit automatically uses:
+If the current branch has no upstream, it attempts the initial push using:
 
 ```bash
 git push -u origin <branch>
 ```
 
-After a successful push:
-
-```text
-done: added, committed, and pushed
-```
-
-Without `--push`:
-
-```text
-done: added and committed (not pushed; use --push to push)
-```
-
----
-
-# Dry Run
-
-`--dry-run` shows what FastGit would do without actually changing anything.
+If the branch already has an upstream, FastGit uses:
 
 ```bash
-gf --dry-run README.md "test commit"
+git push
 ```
 
-Example:
+A successful push completes the add, commit, and push workflow.
+
+## Dry-run mode
+
+Use `--dry-run` to preview the planned operation without staging files, creating a commit, or pushing.
+
+```bash
+gf --dry-run README.md main.c script.sh -m "test changes"
+```
+
+Example output:
 
 ```text
 dry run - nothing was actually done
-would run: git add "README.md"
-would run: git commit -m "test commit"
+would run: git add "README.md" "main.c" "script.sh"
+would run: git commit -m "test changes"
 ```
 
-With `--push`:
+### Preview a push
 
 ```bash
-gf --dry-run --push README.md "test push"
+gf --dry-run --push README.md main.c -m "test push"
 ```
 
-Output:
+Example output:
 
 ```text
 dry run - nothing was actually done
-would run: git add "README.md"
+would run: git add "README.md" "main.c"
 would run: git commit -m "test push"
 would run: git push
 ```
 
-The order of the options does not matter:
+The dry-run option can be combined with `--push` to preview the workflow without performing it.
 
-```bash
-gf --dry-run --push README.md "test push"
-```
+## Automatic repository setup
 
-or:
-
-```bash
-gf --push --dry-run README.md "test push"
-```
-
----
-
-# New Repository Setup
-
-FastGit can initialize a directory that isn't already a Git repository.
+FastGit can initialize a new local Git repository when run in a directory without an existing `.git` directory.
 
 For example:
 
@@ -234,125 +221,51 @@ cd my-project
 touch README.md
 ```
 
-Then:
+Then run:
 
 ```bash
-gf README.md "initial commit"
+gf README.md -m "initial commit"
 ```
 
-FastGit detects that `.git` does not exist and initializes the repository.
+FastGit initializes the repository and sets the initial branch to `main`.
 
-It runs:
-
-```bash
-git init
-git branch -M main
-```
-
-It then asks:
+During setup, it asks for an optional remote URL:
 
 ```text
-Enter your new GitHub repo URL (or press Enter to skip):
+enter your new gitHub repo url (or press enter to skip):
 ```
 
-You can enter an existing remote repository URL, for example:
+You can provide an existing repository URL or press Enter to skip.
 
-```text
-https://github.com/nxseif/my-project.git
-```
+**Note:** FastGit initializes the local repository and can configure a remote. It does not create a new GitHub repository automatically.
 
-FastGit adds it as:
+## Repository discovery
 
-```bash
-git remote add origin <url>
-```
-
-You can then push using:
-
-```bash
-gf --push README.md "initial commit"
-```
-
-### Important
-
-FastGit initializes the **local** Git repository and can connect it to a remote repository.
-
-It does **not** create a new GitHub repository automatically.
-
----
-
-# Repository Discovery
-
-FastGit can search your home directory for local Git repositories.
-
-Run:
+List Git repositories found within the configured search depth of your home directory:
 
 ```bash
 gf repos
 ```
 
-Example:
-
-```text
-your repositories:
-
-oryx
-/home/v/projects/oryx
-
-project-web
-/home/v/projects/project-web
-
-nxvpn
-/home/v/projects/nxvpn
-
-fast-git
-/home/v/fast-git
-
-netchecker
-/home/v/netchecker
-```
-
-FastGit searches up to three directory levels inside your home directory.
-
-It uses:
+FastGit uses `find` to search for `.git` directories:
 
 ```bash
 find ~ -maxdepth 3 -type d -name ".git"
 ```
 
----
+The command displays repository names and their paths.
 
-# Repository Navigation
+## Repository navigation
 
-FastGit also includes `gf repo <name>` for quickly switching to a repository.
-
-Example:
+FastGit also supports:
 
 ```bash
 gf repo nxvpn
 ```
 
-Instead of:
+This feature is implemented through a Bash function in `gf-function.sh`, because a normal executable cannot change the working directory of the shell that launched it.
 
-```bash
-cd ~/projects/nxvpn
-```
-
-FastGit changes your current terminal directory to the selected repository.
-
-### Why is this a Bash function?
-
-A normal executable cannot change the directory of the shell that launched it.
-
-Because of this, the `gf repo` command is implemented through:
-
-```text
-gf-function.sh
-```
-
----
-
-## Enable `gf repo`
+### Enable repository navigation
 
 Copy the function file:
 
@@ -360,7 +273,7 @@ Copy the function file:
 cp gf-function.sh ~/.local/bin/gf-function.sh
 ```
 
-Add it to `.bashrc`:
+Add it to your Bash configuration:
 
 ```bash
 echo 'source ~/.local/bin/gf-function.sh' >> ~/.bashrc
@@ -376,193 +289,42 @@ You can now use:
 
 ```bash
 gf repos
-```
-
-and:
-
-```bash
 gf repo nxvpn
 ```
 
----
+## Git shortcuts
 
-# Git Shortcuts
+| Command | Description |
+|---|---|
+| `gf status` | Show Git status |
+| `gf diff` | Show unstaged changes |
+| `gf branch` | Display the current branch |
+| `gf log` | Show the last five commits |
+| `gf version` | Display the FastGit version |
+| `gf help` | Display usage information |
+| `gf repos` | List discovered repositories |
+| `gf repo <name>` | Switch to a repository |
 
-FastGit also provides shortcuts for common Git commands.
+## Error handling
 
-### Status
+FastGit performs checks during the workflow, including:
 
-```bash
-gf status
-```
+- Verifying that the current directory belongs to a Git repository
+- Checking that supplied files exist
+- Handling failures from `git add` and `git commit`
+- Detecting when there is nothing to commit
+- Checking for an `origin` remote before pushing
+- Handling push failures
 
-Equivalent to:
-
-```bash
-git status
-```
-
----
-
-### Diff
-
-```bash
-gf diff
-```
-
-Equivalent to:
-
-```bash
-git diff
-```
-
----
-
-### Current branch
-
-```bash
-gf branch
-```
-
-Equivalent to:
-
-```bash
-git branch --show-current
-```
-
----
-
-### Recent commits
-
-```bash
-gf log
-```
-
-Shows the last five commits:
-
-```bash
-git log --oneline -5
-```
-
----
-
-### Version
-
-```bash
-gf version
-```
-
-Example:
-
-```text
-fastgit v1.8.0
-```
-
----
-
-### Help
-
-```bash
-gf help
-```
-
-Displays the available commands and options.
-
----
-
-# Quick Reference
-
-| Command                              | Description                 |
-| ------------------------------------ | --------------------------- |
-| `gf file "message"`                  | Add and commit one file     |
-| `gf file1 file2 "message"`           | Add and commit two files    |
-| `gf --push file "message"`           | Add, commit and push        |
-| `gf --dry-run file "message"`        | Show what would happen      |
-| `gf --dry-run --push file "message"` | Preview a push operation    |
-| `gf status`                          | Show Git status             |
-| `gf diff`                            | Show unstaged changes       |
-| `gf branch`                          | Show current branch         |
-| `gf log`                             | Show last 5 commits         |
-| `gf version`                         | Show FastGit version        |
-| `gf help`                            | Show help                   |
-| `gf repos`                           | Find local Git repositories |
-| `gf repo <name>`                     | Switch to a repository      |
-
----
-
-# Error Handling
-
-FastGit performs several checks before and during Git operations.
-
-It checks:
-
-* Whether the current directory is a Git repository
-* Whether a filename was provided
-* Whether the file exists
-* Whether `git add` succeeds
-* Whether there is anything to commit
-* Whether `git commit` succeeds
-* Whether an `origin` remote exists before pushing
-* Whether `git push` succeeds
-
-Example:
+Example warning:
 
 ```text
 warning: README.md does not exist
 ```
 
-or:
+FastGit exits when a supplied file cannot be found instead of continuing with the staging operation.
 
-```text
-warning: git add failed
-```
-
----
-
-# How It Works
-
-The main script follows this general process:
-
-```text
-Arguments
-   │
-   ├── help / version / status / log / branch / diff
-   │
-   └── normal command
-          │
-          ▼
-     Parse options
-          │
-          ▼
-   Check Git repository
-          │
-          ▼
-     Check files
-          │
-          ▼
-   Get commit message
-          │
-          ▼
-       git add
-          │
-          ▼
-   Check staged changes
-          │
-          ▼
-      git commit
-          │
-          ▼
-    --push specified?
-       /       \
-     no         yes
-     │           │
-     ▼           ▼
-   Done      git push
-```
-
----
-
-# Project Structure
+## Project structure
 
 ```text
 fast-git/
@@ -571,86 +333,41 @@ fast-git/
 └── README.md
 ```
 
-### `fastgit.sh`
+**`fastgit.sh`**
 
-Main FastGit script.
+The main script handles argument parsing, file validation, Git operations, dry-run mode, repository discovery, and Git shortcuts.
 
-Handles:
+**`gf-function.sh`**
 
-* Argument parsing
-* Git repository detection
-* File validation
-* `git add`
-* `git commit`
-* optional `git push`
-* dry-run mode
-* Git shortcuts
-* repository discovery
+Contains the Bash function required for repository navigation with `gf repo <name>`.
 
-### `gf-function.sh`
+## Technologies
 
-Contains the Bash function needed for:
+- Bash
+- Linux
+- Git
+- GitHub
 
-```bash
-gf repo <name>
-```
+## Why I built it
 
-The function is required because `cd` needs to affect the current shell.
+FastGit started as a small project to make repetitive Git commands easier to use from the terminal.
 
----
+As I learned Bash, Linux, and Git, I gradually added features such as multi-file support, dry-run mode, repository discovery, error handling, and optional pushing.
 
-# Technologies
+The project is intentionally kept lightweight and built around a Bash script rather than a larger application.
 
-* Bash
-* Linux
-* Git
-* GitHub
+## Version
 
----
+**Current version: v1.8.1**
 
-# Why I Built It
-
-FastGit started as a small Bash script to make repetitive Git commands less annoying.
-
-Instead of repeatedly typing:
-
-```bash
-git add
-git commit
-git push
-```
-
-I wanted a simple command that could handle the common workflow:
-
-```bash
-gf README.md "update readme"
-```
-
-Then I kept adding features while learning Bash, Linux, and Git.
-
-The project is intentionally built as a Bash script rather than a large application.
-
----
-
-# Version
-
-Current version:
-
-```text
-v1.8.0
-```
-
-Check it with:
+Check your installed version with:
 
 ```bash
 gf version
 ```
 
----
-
 ## Author
 
 Created by **nxseif**
 
-Making Git less suffering, one command at a time. 😭
-
+*Making Git less suffering, one command at a time. 😭*

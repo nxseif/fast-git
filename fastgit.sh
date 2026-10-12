@@ -1,6 +1,7 @@
 #!/bin/bash
 
 fle="$1"
+files=()
 dry_run="no"
 push="no"
 
@@ -54,25 +55,25 @@ fi
 
 if [ "$fle" = "version" ]
 then
-        echo "fastgit v1.8.1"
+        echo "fastgit v1.9.2"
         exit 0
 fi
 
 
 if [ "$fle" = "help" ]
 then
-    echo "fastgit - add, commit and push one or two files in one command"
-    echo ""
-    echo "usage: fastgit [--dry-run] [--push] filename1 [filename2] \"commit message\""
-    echo ""
-    echo "flags:"
-    echo "  --dry-run   show what would happen, don't change anything"
-    echo "  --push      also push after committing (default is no push)"
-    echo ""
-    echo "if you leave out the commit message, fastgit will ask for it"
-    echo " [ gf repos ] list your Git repositories  "
-    echo " [ gf repo <name> ] switch to a repository "
-    exit 0
+	echo "fastgit - add, commit and push multiple files in one command"
+	echo ""
+	echo 'usage: fastgit [--dry-run] [--push] file1 [file2 ...] -m "commit message"'
+	echo ""
+	echo "flags:"
+	echo "  --dry-run   show what would happen, don't change anything"
+	echo "  --push      also push after committing (default is no push)"
+ 	echo ""
+	echo "if you leave out the commit message, fastgit will ask for it"
+	echo " [ gf repos ] list your Git repositories  "
+	echo " [ gf repo <name> ] switch to a repository "
+  	exit 0
 fi
 
 while [ $# -gt 0 ]
@@ -118,30 +119,55 @@ fi
 
 if [ -z "$fle" ]
 then
-    echo "usage: fastgit [--dry-run] [--push] filename1 [filename2] \"commit message\""
+echo 'usage: fastgit [--dry-run] [--push] file1 [file2 ....] -m "commit message"'
     exit 1
 fi
 
-if [ ! -f "$fle" ]
-then
-    echo "warning: $fle does not exist"
-    exit 1
-fi
 
-if [ -f "$2" ]
-then
-    fle2="$2"
-    msg="$3"
+
+
+
+
+
+
+while [ $# -gt 0 ] && [ "$1" !=  "-m" ]
+do
+	files+=("$1")
+shift
+
+done
+
+
+
+if [ "$1" = "-m" ]
+then 
+	shift
+	msg="$*"
 else
-    fle2=""
-    msg="$2"
+	msg=""
 fi
 
-if [ -n "$fle2" ] && [ ! -f "$fle2" ]
+
+
+
+
+for file in "${files[@]}"
+do
+	if [ ! -f "$file" ]
+
 then
-    echo "warning: $fle2 does not exist"
-    exit 1
-fi
+	echo "warning $file donsent exist "
+	exit 1 
+fi 
+done 
+
+
+
+
+
+
+
+
 
 if [ -z "$msg" ]
 then
@@ -154,16 +180,23 @@ then
     exit 1
 fi
 
+
+
+
+
+
+
+
 if [ "$dry_run" = "yes" ]
 then
-    echo "dry run - nothing was actually done"
-    if [ -n "$fle2" ]
-    then
-        echo "would run: git add \"$fle\" \"$fle2\""
-    else
-        echo"would run: git add \"$fle\""
-    fi
-    echo "would run: git commit -m \"$msg\""
+	echo "dry run  nothing was actually done"
+	printf 'would run git add'
+	printf ' "%s"' "${files[@]}"
+echo ""
+
+
+ echo "would run: git commit -m \"$msg\""
+
 
  if [ "$push" = "yes" ]
     then
@@ -172,20 +205,41 @@ then
     exit 0
 fi
 
-if [ -n "$fle2" ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if ! git add "${files[@]}"
 then
-    if ! git add "$fle" "$fle2"
-    then
-        echo "warning: git add fail"
-        exit 1
-    fi
-else
-    if ! git add "$fle"
-    then
-        echo "warning: git add fail"
-        exit 1
-    fi
+	echo "warning git add failed"
+exit 1
+
 fi
+
+
+
+
+
+
 
 
 
