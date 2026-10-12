@@ -358,7 +358,7 @@ The project is intentionally kept lightweight and built around a Bash script rat
 
 ## Version
 
-**Current version: v1.8.1**
+**Current version: v1.9.2**
 
 Check your installed version with:
 
@@ -370,4 +370,4 @@ gf version
 
 Created by **nxseif**
 
-*Making Git less suffering, one command at a time. 😭*
+*Making Git less suffering, one command at a time. *
