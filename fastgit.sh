@@ -71,8 +71,8 @@ then
 	echo "  --push      also push after committing (default is no push)"
  	echo ""
 	echo "if you leave out the commit message, fastgit will ask for it"
-	echo " [ gf repos ] list your Git repositories  "
-	echo " [ gf repo <name> ] switch to a repository "
+	echo "  gf repos  list your Git repositories  "
+	echo "  gf repo name  switch to a repository "
   	exit 0
 fi
 
